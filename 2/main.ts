@@ -38,9 +38,9 @@ type Direction = "up" | "down" | "stale"
   // 711 -- nope
   // 719 -- nope
   // 888 -- nope
-  const test = reports.default[4].map(element => +element)
+  // const test = reports.default[4].map(element => +element)
 
-  console.log(checkReport(test))
+  // console.log(checkReport(test))
 
 
 }())
@@ -53,17 +53,15 @@ function checkReport(reportLine: ReportLine): boolean {
   let left = 0;
   let right = 1;
   let direction: Direction | undefined = undefined
-  let numberOfFuckups = 0
+  let isReportOk : boolean = true;
 
   const { length } = reportLine
 
   // first check for direction 
   direction = setDirection(reportLine[0], reportLine[1])
 
-
   for (let i = 0; i < length; i++) {
-
-    let hasFuckedUpThisRound: boolean = false
+    
     // return if the right is equal to length
     if (right === length) {
       break;
@@ -76,49 +74,33 @@ function checkReport(reportLine: ReportLine): boolean {
     // if the left VALUE  and right VALUE are the same its not ok
     if (leftValue === rightValue) {
       isReportOk = false
-
-      if (hasFuckedUpThisRound) {
-        break
-      }
-
-      hasFuckedUpThisRound = true
+      break;
     }
-
 
     // every step check for direction
     const currentDirection: Direction = setDirection(leftValue, rightValue)
     if (currentDirection !== direction) {
-
-      if (hasFuckedUpThisRound) {
-        break
-      }
-
-      hasFuckedUpThisRound = true
-
+      isReportOk = false
+      break;
     }
 
 
     // Any two adjacent levels differ by at least one and at most three
     const difference = Math.abs(leftValue - rightValue)
     if (difference > 3) {
-
-      if (hasFuckedUpThisRound) {
-        break
-      }
+      isReportOk = false;
+      break;
+    
     }
 
     // increment pointers
     left += 1
     right += 1
-
-    hasFuckedUpThisRound && numberOfFuckups++
-
-    console.log(leftValue, rightValue, numberOfFuckups, currentDirection)
-
+      
+    isReportOk = true
   }
 
-  console.log("fuckups", numberOfFuckups)
-  return numberOfFuckups < 2
+  return !!isReportOk
 
 }
 
@@ -137,18 +119,3 @@ function setDirection(a: number, b: number): Direction {
 
   return "down"
 }
-
-
-
-
-// if the left VALUE  and right VALUE are the same its not ok
-// if (leftValue === rightValue) {
-//   // isReportOk = false
-//   numberOfFuckups++
-//   hasFuckedUpThisRound = true
-//   if (numberOfFuckups > 1) {
-//     break
-//   }
-
-
-// }
